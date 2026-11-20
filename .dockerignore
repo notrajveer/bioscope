@@ -1,0 +1,25 @@
+# Dependencies & local build artifacts
+node_modules
+dist
+
+# Git & GitHub Actions files
+.git
+.gitignore
+.github
+
+# Local environment files & logs
+.env
+.env.*
+*.log
+npm-debug.log*
+
+# Editor & OS files
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Docker & docs not needed during image build
+Dockerfile
+.dockerignore
+README.md
