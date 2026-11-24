@@ -9,7 +9,8 @@ An interactive 3D biology education web application built with React 19, Vite 8,
 
 ## 🎓 Quick Run for Professors & Evaluators (Zero-Setup Remote Run)
 
-If you have Docker installed on your computer (Windows, macOS, or Linux), **you do not need Node.js, npm, or to clone the code**. You can run the verified production container with a single command:
+If you have Docker installed on your computer (Window
+s, macOS, or Linux), **you do not need Node.js, npm, or to clone the code**. You can run the verified production container with a single command:
 
 ```bash
 docker run -d -p 8080:80 --name bioscope notrajveer/bioscope-lite:latest
