@@ -64,7 +64,52 @@ The goal was to transform a raw client-side application into a **production-read
 
 ---
 
-### Concept 1: Continuous Integration (CI) & Shift-Left Quality
+## 2. End-to-End Flow of Work: How We Finished This Project
+
+The execution of this project followed an intentional, step-by-step DevOps engineering progression where every decision directly solved a technical dependency of the next step:
+
+```
+[ STEP 1: Codebase Analysis & Toolchain Selection ]
+  │  * Discovered React 19 + Vite 8 SPA with Three.js / React Three Fiber.
+  │  * Selected Node 22 Alpine (Node 20 reached End-of-Life; Vite 8 requires Node 20.19+/22.12+).
+  ▼
+[ STEP 2: Cross-Platform Native Binary Isolation ]
+  │  * Vite 8 relies on Rust-compiled native binaries (Rolldown, Lightning CSS).
+  │  * Created .dockerignore to block host Windows node_modules from polluting the Linux container.
+  ▼
+[ STEP 3: Multi-Stage Containerization Engineering ]
+  │  * Authored two-stage Dockerfile: Stage 1 (Node 22 builder) -> Stage 2 (Nginx Alpine server).
+  │  * Optimized layer caching: copied package.json & package-lock.json first to cache 'npm ci'.
+  │  * Reduced final container content size from ~1 GB down to 46.5 MB.
+  ▼
+[ STEP 4: Production Web Server Hardening (nginx.conf) ]
+  │  * Fixed SPA client-side routing: 'try_files $uri $uri/ /index.html' prevents 404 errors.
+  │  * Enabled on-the-fly Gzip compression for all web assets.
+  │  * Enforced tiered caching: 1 year immutable for hashed assets, 30 days for 3D .glb models.
+  ▼
+[ STEP 5: Continuous Integration Pipeline (.github/workflows/ci.yml) ]
+  │  * Configured GitHub Actions on pushes & PRs to 'main' with minimal read permissions.
+  │  * Integrated 'oxlint' for sub-second static analysis and 'vite build' for compilation validation.
+  ▼
+[ STEP 6: Continuous Deployment Pipeline (.github/workflows/docker-publish.yml) ]
+  │  * Added Docker Hub repository secrets (DOCKER_USERNAME, DOCKER_TOKEN).
+  │  * Implemented Docker Buildx with GitHub Actions layer cache (type=gha, mode=max).
+  │  * Created smart tagging matrix: rolling ':latest', immutable commit ':sha-<hash>', and semver ':v*.*.*'.
+  ▼
+[ STEP 7: Quality Assurance, Hardening & Workspace Cleanup ]
+  │  * Tested container runtime locally on port 8080 (verified HTTP 200).
+  │  * Purged legacy artifacts (BioScope (1).html, template zip) to keep repository lean.
+  │  * Created single-click self-contained launcher 'run.bat' for seamless local review.
+  ▼
+[ STEP 8: Universal Zero-Setup Distribution ]
+  │  * Published verified image to Docker Hub (notrajveer/bioscope-lite:latest).
+  │  * Any evaluator or teammate can run the full app in seconds:
+  │    docker run -d -p 8080:80 notrajveer/bioscope-lite:latest
+```
+
+---
+
+## 3. Core DevOps Principles Applied in This Project
 
 * **What it is:** Continuous Integration automates the validation of code changes as soon as developers commit or open pull requests. "Shift-left" means catching bugs, syntax issues, and broken builds early in the lifecycle rather than in staging or production.
 * **How it is applied here:**
