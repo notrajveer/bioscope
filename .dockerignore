@@ -23,3 +23,5 @@ Thumbs.db
 Dockerfile
 .dockerignore
 README.md
+DEVOPS_EXPLAINED.md
+*.bat

@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:build": "docker build -t bioscope-lite:local .",
+    "docker:run": "docker run -d -p 8080:80 --name bioscope-local bioscope-lite:local",
+    "docker:stop": "docker rm -f bioscope-local"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
